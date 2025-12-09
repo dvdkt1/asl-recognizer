@@ -7,6 +7,30 @@ import type { Results } from "@mediapipe/hands";
 import * as tf from "@tensorflow/tfjs";
 import "@tensorflow/tfjs-backend-webgl";
 
+const FINGER_JOINTS = [
+  //Thumb
+  [0, 1], [1, 2], [2, 3], [3, 4], 
+
+  // Index Finger
+  [0, 5], // Wrist to Index Knuckle
+  [5, 6], [6, 7], [7, 8],
+
+  // Middle Finger
+  [9, 10], [10, 11], [11, 12], 
+
+  // Ring Finger
+  [13, 14], [14, 15], [15, 16], 
+
+  //Pinky Finger
+  [0, 17], // Wrist to Pinky Knuckle
+  [17, 18], [18, 19], [19, 20],
+
+  // Across the Palm
+  [5, 9],   // Index to Middle
+  [9, 13],  // Middle to Ring
+  [13, 17]  // Ring to Pinky
+];
+
 export default function CameraView() {
   const webcamRef = useRef<Webcam>(null);
   const canvasRef = useRef<HTMLCanvasElement>(null);
@@ -75,7 +99,6 @@ const predictHandState = (landmarks: any[]) => {
   }, []);
 
   const onResults = (results: Results) => {
-    // Starts Timer
     const startTime = performance.now();
 
     if (!canvasRef.current || !webcamRef.current?.video) return;
@@ -92,45 +115,62 @@ const predictHandState = (landmarks: any[]) => {
     canvasCtx.save();
     canvasCtx.clearRect(0, 0, videoWidth, videoHeight);
 
-    // Mirror the canvas to match the video
+    // Mirror the canvas to match video
     canvasCtx.scale(-1, 1);
     canvasCtx.translate(-videoWidth, 0);
 
     if (results.multiHandLandmarks && results.multiHandLandmarks.length > 0) {
       for (const landmarks of results.multiHandLandmarks) {
-        // draws green dots
+        
+        // DRAW SKELETON (Green Lines)
+        canvasCtx.strokeStyle = "#00FF00";
+        canvasCtx.lineWidth = 2;
+
+        for (let i = 0; i < FINGER_JOINTS.length; i++) {
+            const startIdx = FINGER_JOINTS[i][0];
+            const endIdx = FINGER_JOINTS[i][1];
+
+            const startPoint = landmarks[startIdx];
+            const endPoint = landmarks[endIdx];
+
+            const x1 = startPoint.x * videoWidth;
+            const y1 = startPoint.y * videoHeight;
+            const x2 = endPoint.x * videoWidth;
+            const y2 = endPoint.y * videoHeight;
+
+            canvasCtx.beginPath();
+            canvasCtx.moveTo(x1, y1);
+            canvasCtx.lineTo(x2, y2);
+            canvasCtx.stroke();
+        }
+
+        // DRAW JOINTS (Red Dots)
+        canvasCtx.fillStyle = "#FF0000";
         for (const point of landmarks) {
           const x = point.x * videoWidth;
           const y = point.y * videoHeight;
           canvasCtx.beginPath();
-          canvasCtx.arc(x, y, 5, 0, 2 * Math.PI);
-          canvasCtx.fillStyle = "#00FF00";
+          canvasCtx.arc(x, y, 4, 0, 2 * Math.PI); // Slightly smaller dots (4px)
           canvasCtx.fill();
         }
 
-        // baseline prediction
+        // PREDICTION TEXT
         const prediction = predictHandState(landmarks);
-
-        // draw the prediction text and make sure it isn't backwards
         canvasCtx.save();
         canvasCtx.scale(-1, 1); 
-        canvasCtx.fillStyle = "red";
-        canvasCtx.font = "48px Arial";
-        canvasCtx.fillText(prediction, -200, 50); // Draw near top right
+        canvasCtx.fillStyle = "white"; // Changed to white for better contrast
+        canvasCtx.font = "bold 40px Arial";
+        canvasCtx.fillText(prediction, -200, 50);
         canvasCtx.restore();
       }
     }
     canvasCtx.restore();
 
-    // End timer and logs metrics
     const endTime = performance.now();
-    const latency = endTime - startTime;
-    latencies.current.push(latency);
-
-    // Log average every 100 frames
+    latencies.current.push(endTime - startTime);
     if (latencies.current.length % 100 === 0) {
-        const avgLatency = latencies.current.reduce((a, b) => a + b, 0) / latencies.current.length;
-        console.log(`Average Latency (p50): ${avgLatency.toFixed(2)} ms`);
+        const avg = latencies.current.reduce((a,b)=>a+b,0)/latencies.current.length;
+        console.log(`Average Latency (p50): ${avg.toFixed(2)} ms`);
     }
   };
 
