@@ -6,8 +6,8 @@ from sklearn.preprocessing import LabelEncoder
 import os
 
 # CONFIG
-DATA_FILE = 'initial_batch.json' 
-MODEL_DIR = 'public/model'
+DATA_FILE = 'asl_dataset.json' 
+MODEL_DIR = 'public/model_v2'
 
 # ensures directories exist
 os.makedirs(MODEL_DIR, exist_ok=True)
