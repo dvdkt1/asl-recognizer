@@ -188,12 +188,7 @@ tensorflowjs_converter \
 - confusion_matrix.png — visualization
 - results.csv — system metrics log template
 
-# 9. Demo Video (TODO put link here)
-
-- Put link here
 
 
-# 10. Deployment Device Setup (Put what you used a with cuda and how it is feasable to deploy )
+# 9. Deployment Device Setup (Put what you used a with cuda and how it is feasable to deploy )
 
-# 11. License (Put license here)
-- license 
