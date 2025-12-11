@@ -88,7 +88,7 @@ This guarantees invariance to:
 ## Task Performance
 | Metric | Value |
 |--------|--------|
-| Validation Accuracy | ~98% |
+| Validation Accuracy | ~99.67% |
 | Epochs | 50 |
 | Loss | Sparse Categorical Crossentropy |
 
@@ -99,11 +99,9 @@ Tested on Chrome Desktop (WebGL):
 
 | Metric | Result |
 |--------|--------|
-| p50 Latency | ~20 ms |
-| FPS | 25–35 FPS |
+| p50 Latency | ~4.9 ms |
 | Time-to-First-Inference (TTFI) | < 2 seconds |
-| Model Size | ~50 KB |
-| Bundle Size | < 10 MB |
+| Model Size | ~115 KB |
 
 The model meets all real-time interaction requirements.
 
