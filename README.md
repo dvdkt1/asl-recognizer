@@ -51,10 +51,10 @@ A tiny, efficient MLP optimized for browser inference:
 | Input | 63 features (21 landmarks × 3 dims) |
 | Dense 1 | 64 units, ReLU + Dropout(0.2) |
 | Dense 2 | 32 units, ReLU |
-| Output | 26-class softmax |
+| Output | 24-class softmax |
 
-- **Model Size:** ~50 KB  
-- **Parameters:** ~5,000  
+- **Model Size:** ~115 KB  
+- **Parameters:** ~6,968 
 - **Training Framework:** Python/Keras  
 - **Deployment:** TensorFlow.js format  
 
@@ -83,7 +83,7 @@ This guarantees invariance to:
 
 ---
 
-# 3. Results (TODO: Update this later)
+# 3. Results 
 
 ## Task Performance
 | Metric | Value |
@@ -115,7 +115,7 @@ The model meets all real-time interaction requirements.
 - MediaPipe Hands delivered high-quality landmarks at real-time FPS  
 - GPU acceleration via WebGL kept latency low  
 
-## Challenges (Update This)
+## Challenges 
 - Some ASL letters are visually similar (M, N, R)  
 - Predictions can flicker due to frame-by-frame inference  
 - Mobile browsers occasionally fall back to CPU mode  
@@ -190,5 +190,4 @@ tensorflowjs_converter \
 
 
 
-# 9. Deployment Device Setup (Put what you used a with cuda and how it is feasable to deploy )
 
